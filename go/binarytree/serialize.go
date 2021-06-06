@@ -42,12 +42,12 @@ func (c *Codec) serialize(root *TreeNode, sb *strings.Builder) {
 func (c *Codec) Deserialize(data string) *TreeNode {
 	sdata := strings.Split(data, SEP)
 
-	// l := list.New()
-	// for _, v := range sdata {
-	// 	l.PushBack(v)
-	// }
-	// return c.deserialize(l)
-	return c.deserialize_with_slice(&sdata)
+	l := list.New()
+	for _, v := range sdata {
+		l.PushBack(v)
+	}
+	return c.deserialize(l)
+	// return c.deserialize_with_slice(&sdata)
 }
 
 func (c *Codec) deserialize(data *list.List) *TreeNode {
@@ -75,7 +75,6 @@ func (c *Codec) deserialize_with_slice(data *[]string) *TreeNode {
 	if len(*data) < 1 {
 		return nil
 	}
-
 	// 移除第一个元素，它是根节点
 	first := (*data)[0]
 	*data = (*data)[1:]
