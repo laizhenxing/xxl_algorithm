@@ -3,19 +3,20 @@ package binarytree
 // 待完善
 
 // 前序遍历
-func DepthPreoder(root *TreeNode, depth int) int {
+func DepthPreoder(root *TreeNode) int {
 	if root == nil {
-		return depth
+		return 0
 	}
 
-	if root.Left != nil || root.Right != nil {
-		depth += 1
+	return max(DepthPreoder(root.Left), DepthPreoder(root.Right)) + 1
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
 	}
 
-	depth = DepthPreoder(root.Left, depth)
-	depth = DepthPreoder(root.Right, depth)
-
-	return depth
+	return b
 }
 
 // 后序遍历
@@ -24,8 +25,8 @@ func DepthPostoder(root *TreeNode, depth int) int {
 		return depth
 	}
 
-	DepthPreoder(root.Left, depth)
-	DepthPreoder(root.Right, depth)
+	DepthPostoder(root.Left, depth)
+	DepthPostoder(root.Right, depth)
 
 	if root.Left != nil || root.Right != nil {
 		depth += 1
@@ -40,13 +41,13 @@ func DepthInorder(root *TreeNode, depth int) int {
 		return depth
 	}
 
-	DepthPreoder(root.Left, depth)
+	DepthInorder(root.Left, depth)
 
 	if root.Left != nil || root.Right != nil {
 		depth += 1
 	}
 
-	DepthPreoder(root.Right, depth)
+	DepthInorder(root.Right, depth)
 
 	return depth
 }

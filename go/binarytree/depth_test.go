@@ -37,7 +37,7 @@ func TestDepthPreoder(t *testing.T) {
 	for _, tt := range tests {
 		fmt.Printf("%#v\n", c.Deserialize("7,4,3,1,0,#,#,#,#,2,#,#,3,#,#,"))
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DepthPreoder(tt.args.root, tt.args.depth); got != tt.want {
+			if got := DepthPreoder(tt.args.root); got != tt.want {
 				t.Errorf("DepthPreoder() = %v, want %v", got, tt.want)
 			}
 		})

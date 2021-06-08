@@ -1,5 +1,6 @@
 package binarytree
 
+// 二叉树的问题难点在于，如何把题目的要求细化成每个节点需要做的事情
 // 二叉树节点
 type TreeNode struct {
 	Val         int
