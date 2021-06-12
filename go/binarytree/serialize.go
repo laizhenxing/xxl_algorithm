@@ -90,3 +90,11 @@ func (c *Codec) deserialize_with_slice(data *[]string) *TreeNode {
 
 	return root
 }
+
+func Serialize(root *TreeNode) string {
+	return new(Codec).Serialize(root)
+}
+
+func Deserialize(data string) *TreeNode {
+	return new(Codec).Deserialize(data)
+}

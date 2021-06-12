@@ -2,7 +2,7 @@ package binarytree
 
 import "fmt"
 
-var nodes [][]int
+var _nodes [][]int
 
 // 待完善
 func Printf(root *TreeNode) {
@@ -10,16 +10,16 @@ func Printf(root *TreeNode) {
 		return
 	}
 
-	nodes = [][]int{
+	_nodes = [][]int{
 		[]int{root.Val},
 	}
 
-	traverse(root, 0)
+	traverse_print(root, 0)
 
 	fmt.Println(nodes)
 }
 
-func traverse(root *TreeNode, k int) {
+func traverse_print(root *TreeNode, k int) {
 	if root == nil {
 		return
 	}
@@ -27,11 +27,11 @@ func traverse(root *TreeNode, k int) {
 	fmt.Println("root.val: ", root.Val, len(nodes))
 	if len(nodes) <= k {
 		subNode := []int{}
-		nodes = append(nodes, subNode)
+		_nodes = append(_nodes, subNode)
 	}
 
-	nodes[k] = append(nodes[k], root.Val)
+	_nodes[k] = append(_nodes[k], root.Val)
 
-	traverse(root.Left, k+1)
-	traverse(root.Right, k+1)
+	traverse_print(root.Left, k+1)
+	traverse_print(root.Right, k+1)
 }
