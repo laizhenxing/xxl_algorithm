@@ -7,6 +7,10 @@ type TreeNode struct {
 	Left, Right *TreeNode
 }
 
+func NewTreeNode(val int) *TreeNode {
+	return &TreeNode{Val: val}
+}
+
 // N 叉树节点
 type NTreeNode struct {
 	Val      int

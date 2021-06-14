@@ -13,11 +13,11 @@ func isValidBST(root, min, max *binarytree.TreeNode) bool {
 		return true
 	}
 
-	if max != nil && max.Val < root.Val {
+	if max != nil && max.Val <= root.Val {
 		return false
 	}
 
-	if min != nil && min.Val > root.Val {
+	if min != nil && min.Val >= root.Val {
 		return false
 	}
 

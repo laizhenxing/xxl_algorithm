@@ -29,6 +29,13 @@ func TestIsValidBST(t *testing.T) {
 			},
 			want: false,
 		},
+		{
+			name: "is not BST",
+			args: args{
+				root: binarytree.Deserialize("2,2,#,#,2,#,#,"),
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
