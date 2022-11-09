@@ -599,3 +599,110 @@ func TestBreadthFirstTraversal(t *testing.T) {
 		})
 	}
 }
+
+// 宽度优先遍历
+func TestIsCBT(t *testing.T) {
+	type args struct {
+		root *BinaryTree
+	}
+	cases := []struct {
+		name  string
+		args  args
+		wants bool
+	}{
+		{
+			name: "case1",
+			args: args{
+				root: DeserializeByString("1_2_4_#_8_#_#_5_9_#_#_#_3_6_#_#_7_#_#_"),
+			},
+			wants: false,
+		},
+		{
+			name: "case2",
+			args: args{
+				root: DeserializeByString("1_2_#_4_#_5_#_6_#_#_3_#_#_"),
+			},
+			wants: false,
+		},
+		{
+			name: "case3",
+			args: args{
+				root: DeserializeByString("7_6_4_8_#_#_#_3_#_#_5_2_#_#_1_#_#_"),
+			},
+			wants: true,
+		},
+		{
+			name: "case4",
+			args: args{
+				root: DeserializeByString("1_2_4_8_#_#_9_#_#_5_10_#_#_#_3_6_#_#_7_#_#_"),
+			},
+			wants: true,
+		},
+	}
+
+	for _, ca := range cases {
+		t.Run(ca.name, func(t *testing.T) {
+			if vals := IsCBT(ca.args.root); !reflect.DeepEqual(ca.wants, vals) {
+				t.Fatalf("post_order by unrecursive fail. Except: %v, but got: %v", ca.wants, vals)
+			}
+		})
+	}
+}
+
+func TestLowestAncestor2(t *testing.T) {
+	type args struct {
+		root  *BinaryTree
+		node1 *BinaryTree
+		node2 *BinaryTree
+	}
+	cases := []struct {
+		name  string
+		args  args
+		wants []int
+	}{
+		{
+			name: "case1",
+			args: args{
+				root:  DeserializeByString("1_2_4_#_8_#_#_5_9_#_#_#_3_6_#_#_7_#_#_"),
+				node1: nil,
+				node2: nil,
+			},
+			wants: nil,
+		},
+		{
+			name: "case2",
+			args: args{
+				root:  DeserializeByString("1_2_#_4_#_5_#_6_#_#_3_#_#_"),
+				node1: nil,
+				node2: nil,
+			},
+			wants: nil,
+		},
+		{
+			name: "case3",
+			args: args{
+				root:  DeserializeByString("7_6_4_8_#_#_#_3_#_#_5_2_#_#_1_#_#_"),
+				node1: nil,
+				node2: nil,
+			},
+			wants: nil,
+		},
+		{
+			name: "case4",
+			args: args{
+				root:  DeserializeByString("1_2_4_8_#_#_9_#_#_5_10_#_#_#_3_6_#_#_7_#_#_"),
+				node1: nil,
+				node2: nil,
+			},
+			wants: nil,
+		},
+	}
+
+	for _, ca := range cases {
+		t.Run(ca.name, func(t *testing.T) {
+			if vals := IsCBT(ca.args.root); !reflect.DeepEqual(ca.wants, vals) {
+				t.Fatalf("post_order by unrecursive fail. Except: %v, but got: %v", ca.wants, vals)
+			}
+		})
+	}
+}

@@ -27,6 +27,17 @@ func (sn *SingleNode) GetDetails() (length int, vals []int) {
 	return
 }
 
+func (sn *SingleNode) Len() (length int) {
+	if sn == nil || sn.Next == nil {
+		return 0
+	}
+	head := sn.Next
+	for ; head != nil; head = head.Next {
+		length++
+	}
+	return
+}
+
 func (sn *SingleNode) Display() {
 	if sn == nil {
 		fmt.Println("链表为空")
@@ -259,12 +270,8 @@ func IsPalindrome3(node *SingleNode) bool {
  * }
  */
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
-
-func isPalindrome(head *ListNode) bool {
+// 判断是否是回文
+func IsPalindrome(head *SingleNode) bool {
 	if head == nil || head.Next == nil {
 		return true
 	}
@@ -289,7 +296,7 @@ func isPalindrome(head *ListNode) bool {
 	f = head
 	cur = s // 保存最后一个节点位置
 	for s != nil {
-		if s.Val != f.Val {
+		if s.Value != f.Value {
 			res = false
 			break
 		}
@@ -307,6 +314,92 @@ func isPalindrome(head *ListNode) bool {
 		cur = f
 	}
 	// mid.Next = s
-
 	return res
+}
+
+// 根据给定的整数 pivot 分区：左：小；中：相等；右：大
+func ListPartition(head *SingleNode, pivot int) *SingleNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	head = head.Next
+	var (
+		sh, st, eh, et, bh, bt *SingleNode
+	)
+	for head != nil {
+		next := head.Next
+		head.Next = nil
+		if head.Value < pivot {
+			if sh == nil {
+				sh = head
+				st = head
+			} else {
+				st.Next = head
+				st = head
+			}
+		} else if head.Value == pivot {
+			if eh == nil {
+				eh = head
+				et = head
+			} else {
+				et.Next = head
+				et = head
+			}
+		} else {
+			if bh == nil {
+				bh = head
+				bt = head
+			} else {
+				bt.Next = head
+				bt = head
+			}
+		}
+		head = next
+	}
+	if et != nil {
+		st.Next = eh
+		if et == nil {
+			et = st
+		}
+	}
+	if et != nil {
+		et.Next = bh
+	}
+	if sh != nil {
+		head = sh
+	} else if eh != nil {
+		head = eh
+	} else {
+		head = bh
+	}
+	return head
+}
+
+// leetcode 19 https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/
+// 删除链表的倒数第 N 个结点
+
+// 1. 计算链表长度
+func RemoveNthFromEnd1(head *SingleNode, n int) *SingleNode {
+	l := head.Len()
+	headPre := &SingleNode{0, head}
+	cur := headPre
+	for i := 0; i < l-n+1; i++ {
+		cur = cur.Next
+	}
+	cur.Next = cur.Next.Next
+	return headPre.Next
+}
+
+// 2. 使用快慢指针
+func RemoveNthFromEnd2(head *SingleNode, n int) *SingleNode {
+	headPre := &SingleNode{0, head}
+	first, second := head, headPre
+	for i := 0; i < n; i++ {
+		first = first.Next
+	}
+	for ; first != nil; first = first.Next {
+		second = second.Next
+	}
+	second.Next = second.Next.Next
+	return headPre.Next
 }

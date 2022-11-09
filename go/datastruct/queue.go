@@ -47,3 +47,30 @@ func (q *Queue) Len() int {
 func (q *Queue) Empty() bool {
 	return q.queue.Len() == 0
 }
+
+/***********************************范型队列**********************************************/
+type QueueL[T interface{}] struct {
+	elements []T
+}
+
+// 输入进入队列尾部
+func (q *QueueL[T]) Enqueue(value T) {
+	q.elements = append(q.elements, value)
+}
+
+// 从队列头部取出并删除对应数据
+func (q *QueueL[T]) Dequeue() (T, bool) {
+	var value T
+	if q.Len() == 0 {
+		return value, true
+	}
+
+	value = q.elements[0]
+	q.elements = q.elements[1:]
+	return value, q.Len() == 0
+}
+
+// 队列长度
+func (q *QueueL[T]) Len() int {
+	return len(q.elements)
+}

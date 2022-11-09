@@ -8,8 +8,8 @@ func FindRightIsOne(n int) int {
 }
 
 // 交换 a,b 的值
-func Swap(a, b int) {
-	a = a ^ b
-	b = a ^ b
-	a = a ^ b
-}
+// func Swap1(a, b int) {
+// 	a = a ^ b
+// 	b = a ^ b
+// 	a = a ^ b
+// }

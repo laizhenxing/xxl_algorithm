@@ -322,3 +322,99 @@ func TestIsPalindrome3(t *testing.T) {
 		})
 	}
 }
+
+func TestRemoveNthFromEnd1(t *testing.T) {
+	type args struct {
+		head *SingleNode
+		n    int
+	}
+
+	cases := []struct {
+		name  string
+		args  args
+		wants []int
+	}{
+		{
+			name: "case1",
+			args: args{
+				head: CreateLinkWithVals([]int{1, 2, 3, 4, 5}),
+				n:    2,
+			},
+			wants: []int{1, 2, 3, 5},
+		},
+		{
+			name: "case2",
+			args: args{
+				head: CreateLinkWithVals([]int{1}),
+				n:    1,
+			},
+			wants: nil,
+		},
+		{
+			name: "case3",
+			args: args{
+				head: CreateLinkWithVals([]int{1, 2}),
+				n:    1,
+			},
+			wants: []int{1},
+		},
+	}
+
+	for _, ca := range cases {
+		t.Run(ca.name, func(t *testing.T) {
+			head := RemoveNthFromEnd1(ca.args.head, ca.args.n)
+			_, vals := head.GetDetails()
+			if !reflect.DeepEqual(ca.wants, vals) {
+				t.Fatalf("Not ture. Except: %v; but got: %v", ca.wants, vals)
+			}
+		})
+	}
+}
+
+func TestRemoveNthFromEnd2(t *testing.T) {
+	type args struct {
+		head *SingleNode
+		n    int
+	}
+
+	cases := []struct {
+		name  string
+		args  args
+		wants []int
+	}{
+		{
+			name: "case1",
+			args: args{
+				head: CreateLinkWithVals([]int{1, 2, 3, 4, 5}),
+				n:    2,
+			},
+			wants: []int{1, 2, 3, 5},
+		},
+		{
+			name: "case2",
+			args: args{
+				head: CreateLinkWithVals([]int{1}),
+				n:    1,
+			},
+			wants: nil,
+		},
+		{
+			name: "case3",
+			args: args{
+				head: CreateLinkWithVals([]int{1, 2}),
+				n:    1,
+			},
+			wants: []int{1},
+		},
+	}
+
+	for _, ca := range cases {
+		t.Run(ca.name, func(t *testing.T) {
+			head := RemoveNthFromEnd2(ca.args.head, ca.args.n)
+			_, vals := head.GetDetails()
+			if !reflect.DeepEqual(ca.wants, vals) {
+				t.Fatalf("Not ture. Except: %v; but got: %v", ca.wants, vals)
+			}
+		})
+	}
+}

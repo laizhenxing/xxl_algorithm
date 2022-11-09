@@ -2,6 +2,7 @@ package datastruct
 
 import (
 	"container/list"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -16,15 +17,16 @@ type BinaryTree struct {
 
 // 先序遍历（递归）
 func PreOrderByRecursive(root *BinaryTree) (vals []int) {
-	if root == nil {
-		return
+	var preorder func(*BinaryTree)
+	preorder = func(bt *BinaryTree) {
+		if bt == nil {
+			return
+		}
+		vals = append(vals, bt.Value)
+		preorder(bt.Left)
+		preorder(bt.Right)
 	}
-	// 打印当前节点的值
-	vals = append(vals, root.Value)
-	vleft := PreOrderByRecursive(root.Left)
-	vright := PreOrderByRecursive(root.Right)
-	vals = append(vals, vleft...)
-	vals = append(vals, vright...)
+	preorder(root)
 	return
 }
 
@@ -51,17 +53,32 @@ func PreOrderByUnRecursive(root *BinaryTree) (vals []int) {
 }
 
 // 中序遍历（递归）
-func InOrderByRecursive(root *BinaryTree) (vals []int) {
+func InOrderByRecursive2(root *BinaryTree) (vals []int) {
 	if root == nil {
 		return
 	}
 
-	vleft := InOrderByRecursive(root.Left)
+	vleft := InOrderByRecursive2(root.Left)
 	vals = append(vals, vleft...)
 	// 处理当前节点
 	vals = append(vals, root.Value)
-	vright := InOrderByRecursive(root.Right)
+	vright := InOrderByRecursive2(root.Right)
 	vals = append(vals, vright...)
+	return
+}
+
+// 中序遍历（递归）
+func InOrderByRecursive(root *BinaryTree) (vals []int) {
+	var inoder func(*BinaryTree)
+	inoder = func(bt *BinaryTree) {
+		if bt == nil {
+			return
+		}
+		inoder(root.Left)
+		vals = append(vals, bt.Value)
+		inoder(root.Right)
+	}
+	inoder(root)
 	return
 }
 
@@ -90,11 +107,25 @@ func InOrderByUnRecursive(root *BinaryTree) (vals []int) {
 
 // 后序遍历（递归）
 func PostOrderByRecursive(root *BinaryTree) (vals []int) {
+	var postOrder func(*BinaryTree)
+	postOrder = func(bt *BinaryTree) {
+		if bt == nil {
+			return
+		}
+		postOrder(bt.Left)
+		postOrder(bt.Right)
+		vals = append(vals, bt.Value)
+	}
+	postOrder(root)
+	return
+}
+
+func PostOrderByRecursive2(root *BinaryTree) (vals []int) {
 	if root == nil {
 		return
 	}
-	vleft := PostOrderByRecursive(root.Left)
-	vright := PostOrderByRecursive(root.Right)
+	vleft := PostOrderByRecursive2(root.Left)
+	vright := PostOrderByRecursive2(root.Right)
 	// 处理当前节点
 	vals = append(vals, vleft...)
 	vals = append(vals, vright...)
@@ -269,12 +300,12 @@ func GetNodeBSTData(node *BinaryTree) *NodeBSTData {
 
 	min, max, isBST := node.Value, node.Value, true
 	if node.Left != nil {
-		max = getMax(max, leftData.Max())
-		min = getMin(min, leftData.Min())
+		max = Max(max, leftData.Max())
+		min = Min(min, leftData.Min())
 	}
 	if node.Right != nil {
-		max = getMax(max, rightData.Max())
-		min = getMin(min, rightData.Min())
+		max = Max(max, rightData.Max())
+		min = Min(min, rightData.Min())
 	}
 
 	// 左节点不为空，且（左节点不是 BST或者当前节点的值<=左子树的最大值
@@ -310,7 +341,7 @@ func GetNodeFullData(node *BinaryTree) *NodeFullTreeData {
 	leftData := GetNodeFullData(node.Left)
 	rightData := GetNodeFullData(node.Right)
 
-	height := getMax(leftData.height, rightData.height) + 1
+	height := Max(leftData.height, rightData.height) + 1
 	nodes := leftData.nodes + rightData.nodes + 1
 
 	return NewNodeFullTreeData(height, nodes)
@@ -337,16 +368,46 @@ func GetNodeBalanceData(node *BinaryTree) *NodeBalanceData {
 	leftData := GetNodeBalanceData(node.Left)
 	rightData := GetNodeBalanceData(node.Right)
 
-	height := getMax(leftData.Height(), rightData.Height()) + 1
+	height := Max(leftData.Height(), rightData.Height()) + 1
 	isBalance := leftData.IsBalance() &&
 		rightData.IsBalance() &&
-		abs(leftData.Height(), rightData.Height()) < 2
+		Abs(leftData.Height()-rightData.Height()) < 2
 
 	return NewNodeBalanceData(height, isBalance)
 }
 
 // 完全二叉树的判断
+// 使用宽度优先遍历
 func IsCBT(root *BinaryTree) bool {
+	if root == nil {
+		return true
+	}
+	// 某一个节点左右孩子不双全，遇到就标记为 true
+	leaf := false
+	queue := NewQueue()
+	queue.Enqueue(root)
+	for !queue.Empty() {
+		node := queue.Dequeue().(*BinaryTree)
+		l := node.Left
+		r := node.Right
+
+		// 1. 当前节点 node 左右孩子不双全,并且不是叶子节点
+		// 2. 或者左孩子为空，右孩子不为空
+		// 可以判定该节点以下的子树不为完全二叉树
+		if (leaf && (l != nil || r != nil)) ||
+			(l == nil && r != nil) {
+			return false
+		}
+		if l != nil {
+			queue.Enqueue(l)
+		}
+		if r != nil {
+			queue.Enqueue(r)
+		}
+		if l == nil || r == nil {
+			leaf = true
+		}
+	}
 	return true
 }
 
@@ -417,4 +478,122 @@ func reconPreOrder(queue *list.List) *BinaryTree {
 	return head
 }
 
+// 给点 node1,node2, 找到他们最低公共祖先节点
+// node1,node2 一定属于 head 为头的树
+func LowestAncestor1(head, node1, node2 *BinaryTree) *BinaryTree {
+	if head == nil || node1 == head || node2 == head {
+		return head
+	}
+	fatherMap := map[*BinaryTree]*BinaryTree{
+		head: head,
+	}
+	nodeFatherMap(head, fatherMap)
+	// set1 放置 node1 的父节点
+	set1 := make(map[*BinaryTree]*BinaryTree)
+	cur := node1
+	for cur != fatherMap[cur] {
+		set1[cur] = cur
+		cur = fatherMap[cur]
+	}
+	cur = node2
+	// 查看 node2 的父节点是否存在于 set1 中
+	for cur != fatherMap[cur] {
+		if node, ok := set1[cur]; ok {
+			return node
+		}
+		cur = fatherMap[cur]
+	}
+	return nil
+}
+
+// 给点 node1,node2, 找到他们最低公共祖先节点
+// node1,node2 一定属于 head 为头的树
+func LowestAncestor2(head, node1, node2 *BinaryTree) *BinaryTree {
+	if head == nil || node1 == head || node2 == head {
+		return head
+	}
+
+	left := LowestAncestor2(head.Left, node1, node2)
+	right := LowestAncestor2(head.Right, node1, node2)
+	if left != nil && right != nil { // 左右子树都不为空，说明当前节点 head 为他们最小的公共祖先
+		return head
+	}
+	if left != nil { // 如果左不为空，那结果就是左边返回的信息，右边亦是如此
+		return left
+	}
+	return right
+}
+
+// 给点 node1,node2, 找到他们最低公共祖先节点
+// node1,node2 一定属于 head 为头的树
+// 并查集
+func LowestAncestor3(head, node1, node2 *BinaryTree) *BinaryTree {
+	if head == nil || node1 == head || node2 == head {
+		return head
+	}
+	return nil
+}
+
+// 构建节点的父节点关系
+func nodeFatherMap(head *BinaryTree, fatherMap map[*BinaryTree]*BinaryTree) {
+	if head == nil {
+		return
+	}
+	fatherMap[head.Left] = head
+	fatherMap[head.Right] = head
+	nodeFatherMap(head.Left, fatherMap)
+	nodeFatherMap(head.Right, fatherMap)
+}
+
+type BTNode struct {
+	Value               int
+	Left, Right, Parent *BTNode
+}
+
+// 后继节点问题（后续节点是中序遍历的下一个）
+func GetSuccessorNode(root *BTNode) *BTNode {
+	if root == nil {
+		return root
+	}
+	if root.Right != nil {
+		return getLastLeft(root.Right)
+	}
+	parent := root.Parent
+	for parent != nil && parent.Left != root {
+		root = parent
+		parent = root.Parent
+	}
+	return parent
+}
+
+func getLastLeft(node *BTNode) *BTNode {
+	if node == nil {
+		return node
+	}
+	for node != nil {
+		node = node.Left
+	}
+	return node
+}
+
 // 凹凸问题
+func PrintDetail(N int) {
+	printProcess(1, N, true)
+}
+
+// 递归到某一个节点
+// i 为节点层数，N 表示总层数，down==true 凹 down==false 凸
+func printProcess(i, N int, down bool) {
+	if i > N {
+		return
+	}
+	printProcess(i+1, N, true)
+	var res string
+	if down {
+		res = "凹"
+	} else {
+		res = "凸"
+	}
+	fmt.Printf("%s\t", res)
+	printProcess(i+1, N, false)
+}

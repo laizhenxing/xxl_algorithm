@@ -1,5 +1,10 @@
 package datastruct
 
+import (
+	"fmt"
+	"sort"
+)
+
 // 选择排序 O(N^2)
 // 记住比i小的位置，最后再交换
 func ChooseSort(nums []int) {
@@ -111,3 +116,67 @@ func merge(nums []int, l, mid, r int) {
 }
 
 // 堆排序
+
+// 桶排序
+
+// 比较器
+type Arrays [][]int
+
+// Len is the number of elements in the collection.
+func (a Arrays) Len() int {
+	return len(a)
+}
+
+func (a Arrays) Less(i int, j int) bool {
+	return a[i][1] < a[j][1]
+}
+
+// Swap swaps the elements with indexes i and j.
+func (a Arrays) Swap(i int, j int) {
+	a[i][0], a[j][0] = a[j][0], a[i][0]
+	a[i][1], a[j][1] = a[j][1], a[i][1]
+}
+
+func Ars() {
+	s := Arrays{{1, 3}, {2, 6}, {4, 5}}
+	sort.Sort(s)
+	fmt.Println(s)
+}
+
+// 保证区间中不重叠部分最多 -- 贪心策略
+func IntervalSchedule(s [][]int) int {
+	newS := Arrays(s)
+	if newS.Len() == 0 {
+		return 0
+	}
+	// 按照 end 排序
+	sort.Sort(newS)
+	count := 1
+	x_end := newS[0][1]
+	for _, ints := range newS {
+		if ints[0] >= x_end { // 找到下一个区间
+			count++
+			x_end = ints[1]
+		}
+	}
+	return count
+}
+
+func IntervalSchedule2(s [][]int) int {
+	if len(s) == 0 {
+		return 0
+	}
+	sort.Slice(s, func(i, j int) bool {
+		return s[i][1] < s[j][1]
+	})
+	x_end := s[0][1]
+	count := 1
+	for _, p := range s {
+		if p[0] >= x_end {
+			count++
+			x_end = p[1]
+		}
+	}
+
+	return count
+}
