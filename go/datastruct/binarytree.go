@@ -84,7 +84,7 @@ func InOrderByRecursive(root *BinaryTree) (vals []int) {
 
 // 中序遍历（非递归）
 // 1. 申请一个栈stack，记住cur=root
-// 2. 先把 cur 压入栈，cur=cur.left 重复2
+// 2. 先把 cur 压入栈，cur=cur.left 重复2,找到最左边的一个节点
 // 3. 知道 cur==nil, 弹出 stack 一个节点 node，让 cur=node.right, 然后重复步骤2
 // 4. 当栈为空且cur为空时，整个过程停止
 func InOrderByUnRecursive(root *BinaryTree) (vals []int) {
