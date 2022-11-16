@@ -71,3 +71,48 @@ func TestSubtraction(t *testing.T) {
 		})
 	}
 }
+
+func TestMultiplication(t *testing.T) {
+	type args struct {
+		x, y int
+	}
+	cases := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "case1",
+			args: args{4, 5},
+			want: 20,
+		},
+		{
+			name: "case2",
+			args: args{5, 3},
+			want: 15,
+		},
+		{
+			name: "case3",
+			args: args{-5, 2},
+			want: -10,
+		},
+		{
+			name: "case4",
+			args: args{-5, -5},
+			want: 25,
+		},
+		{
+			name: "case5",
+			args: args{5, -4},
+			want: -20,
+		},
+	}
+
+	for _, ca := range cases {
+		t.Run(ca.name, func(t *testing.T) {
+			if res := Multiplication(ca.args.x, ca.args.y); ca.want != res {
+				t.Fatalf("Excepted: %v, but got: %v", ca.want, res)
+			}
+		})
+	}
+}
